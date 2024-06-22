@@ -44,7 +44,7 @@ fileSystem.writeFileSync(
 fileSystem.writeFileSync(
   `${destPath}/readme.md`,
   `
-# ts_morph
+# ts-morph
 
 To use:
 
@@ -59,7 +59,7 @@ import { Project } from "ts-morph";
 Or use \`@ts-morph/bootstrap\`:
 
 \`\`\`
-deno add @ts-morph/ts-morph
+deno add @ts-morph/bootstrap
 \`\`\`
 
 \`\`\`ts

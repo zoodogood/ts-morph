@@ -9525,6 +9525,8 @@ export declare class EmitOutput {
   private constructor();
   /** TypeScript compiler emit result. */
   get compilerObject(): ts.EmitOutput;
+  /** Gets the diagnostics. */
+  getDiagnostics(): Diagnostic<ts.Diagnostic>[];
   /** Gets if the emit was skipped. */
   getEmitSkipped(): boolean;
   /** Gets the output files. */
@@ -10071,7 +10073,7 @@ export declare class Type<TType extends ts.Type = ts.Type> {
    * Gets the object flags.
    * @remarks Returns 0 for a non-object type.
    */
-  getObjectFlags(): 0 | ObjectFlags.Class | ObjectFlags.Interface | ObjectFlags.Reference | ObjectFlags.Tuple | ObjectFlags.Anonymous | ObjectFlags.Mapped | ObjectFlags.Instantiated | ObjectFlags.ObjectLiteral | ObjectFlags.EvolvingArray | ObjectFlags.ObjectLiteralPatternWithComputedProperties | ObjectFlags.ReverseMapped | ObjectFlags.JsxAttributes | ObjectFlags.JSLiteral | ObjectFlags.FreshLiteral | ObjectFlags.ArrayLiteral | ObjectFlags.ClassOrInterface | ObjectFlags.ContainsSpread | ObjectFlags.ObjectRestType | ObjectFlags.InstantiationExpressionType;
+  getObjectFlags(): 0 | ObjectFlags.Class | ObjectFlags.Interface | ObjectFlags.Reference | ObjectFlags.Tuple | ObjectFlags.Anonymous | ObjectFlags.Mapped | ObjectFlags.Instantiated | ObjectFlags.ObjectLiteral | ObjectFlags.EvolvingArray | ObjectFlags.ObjectLiteralPatternWithComputedProperties | ObjectFlags.ReverseMapped | ObjectFlags.JsxAttributes | ObjectFlags.JSLiteral | ObjectFlags.FreshLiteral | ObjectFlags.ArrayLiteral | ObjectFlags.ClassOrInterface | ObjectFlags.ContainsSpread | ObjectFlags.ObjectRestType | ObjectFlags.InstantiationExpressionType | ObjectFlags.SingleSignatureType;
 }
 
 export declare class TypeParameter extends Type<ts.TypeParameter> {

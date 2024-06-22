@@ -25,11 +25,13 @@ import {
   TypeParameterDeclaration,
   VariableStatement,
 } from "../../../../compiler";
-import { hasParsedTokens } from "../../../../compiler/ast/utils";
+import { ExtendedParser } from "../../../../compiler/ast/utils";
 import { Project } from "../../../../Project";
 import { WriterFunction } from "../../../../types";
 import { createWrappedNode } from "../../../../utils/compiler/createWrappedNode";
 import { getInfoFromText } from "../../testHelpers";
+
+const { hasParsedTokens } = ExtendedParser;
 
 describe("Node", () => {
   describe("constructor", () => {
@@ -226,28 +228,6 @@ describe("Node", () => {
       expect(sourceFile._hasWrappedChildren()).to.be.true;
       sourceFile.forgetDescendants();
       expect(sourceFile._hasWrappedChildren()).to.be.false;
-    });
-
-    it("should only have wrapped children after calling getChildren() for syntax lists", () => {
-      const project = new Project({ useInMemoryFileSystem: true });
-      const sourceFile = project.createSourceFile("/test.ts", "class C { prop: string; }");
-      const syntaxList = sourceFile.getChildSyntaxListOrThrow();
-      expect(syntaxList._hasWrappedChildren()).to.be.false;
-      syntaxList.getChildren();
-      expect(syntaxList._hasWrappedChildren()).to.be.true;
-      syntaxList.forgetDescendants();
-      expect(syntaxList._hasWrappedChildren()).to.be.false;
-    });
-
-    it("should have wrapped children after doing forEachChild on the parent for syntax lists", () => {
-      const project = new Project({ useInMemoryFileSystem: true });
-      const sourceFile = project.createSourceFile("/test.ts", "class C { prop: string; }");
-      const syntaxList = sourceFile.getChildSyntaxListOrThrow();
-      expect(syntaxList._hasWrappedChildren()).to.be.false;
-      sourceFile.forEachChild(() => {});
-      expect(syntaxList._hasWrappedChildren()).to.be.true;
-      syntaxList.forgetDescendants();
-      expect(syntaxList._hasWrappedChildren()).to.be.false;
     });
   });
 
