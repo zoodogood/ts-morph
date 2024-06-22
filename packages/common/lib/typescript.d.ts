@@ -1273,9 +1273,9 @@ declare namespace ts {
                 FixedChunkSize = "FixedChunkSize",
             }
             interface WatchOptions {
-                watchFile?: WatchFileKind | ts.WatchFileKind;
-                watchDirectory?: WatchDirectoryKind | ts.WatchDirectoryKind;
-                fallbackPolling?: PollingWatchKind | ts.PollingWatchKind;
+                watchFile?: WatchFileKind | WatchFileKind;
+                watchDirectory?: WatchDirectoryKind | WatchDirectoryKind;
+                fallbackPolling?: PollingWatchKind | PollingWatchKind;
                 synchronousWatchDirectory?: boolean;
                 excludeDirectories?: string[];
                 excludeFiles?: string[];
@@ -2786,7 +2786,7 @@ declare namespace ts {
                 tabSize?: number;
                 newLineCharacter?: string;
                 convertTabsToSpaces?: boolean;
-                indentStyle?: IndentStyle | ts.IndentStyle;
+                indentStyle?: IndentStyle | IndentStyle;
                 trimTrailingWhitespace?: boolean;
             }
             interface FormatCodeSettings extends EditorSettings {
@@ -2970,14 +2970,14 @@ declare namespace ts {
                 inlineSourceMap?: boolean;
                 inlineSources?: boolean;
                 isolatedModules?: boolean;
-                jsx?: JsxEmit | ts.JsxEmit;
+                jsx?: JsxEmit | JsxEmit;
                 lib?: string[];
                 locale?: string;
                 mapRoot?: string;
                 maxNodeModuleJsDepth?: number;
-                module?: ModuleKind | ts.ModuleKind;
-                moduleResolution?: ModuleResolutionKind | ts.ModuleResolutionKind;
-                newLine?: NewLineKind | ts.NewLineKind;
+                module?: ModuleKind | ModuleKind;
+                moduleResolution?: ModuleResolutionKind | ModuleResolutionKind;
+                newLine?: NewLineKind | NewLineKind;
                 noEmit?: boolean;
                 noEmitHelpers?: boolean;
                 noEmitOnError?: boolean;
@@ -3013,7 +3013,7 @@ declare namespace ts {
                 suppressExcessPropertyErrors?: boolean;
                 suppressImplicitAnyIndexErrors?: boolean;
                 useDefineForClassFields?: boolean;
-                target?: ScriptTarget | ts.ScriptTarget;
+                target?: ScriptTarget | ScriptTarget;
                 traceResolution?: boolean;
                 resolveJsonModule?: boolean;
                 types?: string[];
@@ -3342,14 +3342,14 @@ declare namespace ts {
             isKnownTypesPackageName(name: string): boolean;
             installPackage(options: InstallPackageOptions): Promise<ApplyCodeActionCommandResult>;
             private get typingsCache();
-            getCompilationSettings(): ts.CompilerOptions;
-            getCompilerOptions(): ts.CompilerOptions;
+            getCompilationSettings(): CompilerOptions;
+            getCompilerOptions(): CompilerOptions;
             getNewLine(): string;
             getProjectVersion(): string;
             getProjectReferences(): readonly ProjectReference[] | undefined;
             getScriptFileNames(): string[];
             private getOrCreateScriptInfoAndAttachToProject;
-            getScriptKind(fileName: string): ts.ScriptKind;
+            getScriptKind(fileName: string): ScriptKind;
             getScriptVersion(filename: string): string;
             getScriptSnapshot(filename: string): IScriptSnapshot | undefined;
             getCancellationToken(): HostCancellationToken;
@@ -3385,16 +3385,16 @@ declare namespace ts {
             getProjectName(): string;
             protected removeLocalTypingsFromTypeAcquisition(newTypeAcquisition: TypeAcquisition): TypeAcquisition;
             getExternalFiles(updateLevel?: ProgramUpdateLevel): SortedReadonlyArray<string>;
-            getSourceFile(path: Path): ts.SourceFile | undefined;
+            getSourceFile(path: Path): SourceFile | undefined;
             close(): void;
             private detachScriptInfoIfNotRoot;
             isClosed(): boolean;
             hasRoots(): boolean;
-            getRootFiles(): ts.server.NormalizedPath[];
-            getRootScriptInfos(): ts.server.ScriptInfo[];
+            getRootFiles(): server.NormalizedPath[];
+            getRootScriptInfos(): server.ScriptInfo[];
             getScriptInfos(): ScriptInfo[];
             getExcludedFiles(): readonly NormalizedPath[];
-            getFileNames(excludeFilesFromExternalLibraries?: boolean, excludeConfigFiles?: boolean): ts.server.NormalizedPath[];
+            getFileNames(excludeFilesFromExternalLibraries?: boolean, excludeConfigFiles?: boolean): server.NormalizedPath[];
             hasConfigFile(configFilePath: NormalizedPath): boolean;
             containsScriptInfo(info: ScriptInfo): boolean;
             containsFile(filename: NormalizedPath, requireOpen?: boolean): boolean;
@@ -3418,11 +3418,11 @@ declare namespace ts {
             private isValidGeneratedFileWatcher;
             private clearGeneratedFileWatch;
             getScriptInfoForNormalizedPath(fileName: NormalizedPath): ScriptInfo | undefined;
-            getScriptInfo(uncheckedFileName: string): ts.server.ScriptInfo | undefined;
+            getScriptInfo(uncheckedFileName: string): server.ScriptInfo | undefined;
             filesToString(writeProjectFileNames: boolean): string;
             setCompilerOptions(compilerOptions: CompilerOptions): void;
             setTypeAcquisition(newTypeAcquisition: TypeAcquisition | undefined): void;
-            getTypeAcquisition(): ts.TypeAcquisition;
+            getTypeAcquisition(): TypeAcquisition;
             protected removeRoot(info: ScriptInfo): void;
             protected enableGlobalPlugins(options: CompilerOptions): void;
             protected enablePlugin(pluginConfigEntry: PluginImport, searchPaths: string[]): void;
@@ -3455,7 +3455,7 @@ declare namespace ts {
             getScriptFileNames(): string[];
             getLanguageService(): never;
             getHostForAutoImportProvider(): never;
-            getProjectReferences(): readonly ts.ProjectReference[] | undefined;
+            getProjectReferences(): readonly ProjectReference[] | undefined;
         }
         /**
          * If a file is opened, the server will look for a tsconfig (or jsconfig)
@@ -3472,7 +3472,7 @@ declare namespace ts {
              * @returns: true if set of files in the project stays the same and false - otherwise.
              */
             updateGraph(): boolean;
-            getConfigFilePath(): ts.server.NormalizedPath;
+            getConfigFilePath(): server.NormalizedPath;
             getProjectReferences(): readonly ProjectReference[] | undefined;
             updateReferences(refs: readonly ProjectReference[] | undefined): void;
             /**
@@ -3496,7 +3496,7 @@ declare namespace ts {
             compileOnSaveEnabled: boolean;
             excludedFiles: readonly NormalizedPath[];
             updateGraph(): boolean;
-            getExcludedFiles(): readonly ts.server.NormalizedPath[];
+            getExcludedFiles(): readonly server.NormalizedPath[];
         }
         function convertFormatOptions(protocolOptions: protocol.FormatCodeSettings): FormatCodeSettings;
         function convertCompilerOptions(protocolOptions: protocol.ExternalProjectCompilerOptions): CompilerOptions & protocol.CompileOnSaveMixin;
@@ -11710,4 +11710,4 @@ declare namespace ts {
      */
     function transform<T extends Node>(source: T | T[], transformers: TransformerFactory<T>[], compilerOptions?: CompilerOptions): TransformationResult<T>;
 }
-export = ts;
+export { ts };

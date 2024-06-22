@@ -10,14 +10,13 @@ on:
 
 jobs:
   build:
-    name: test ubuntu-latest
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - uses: denoland/setup-deno@v1
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v4
       with:
-        node-version: '16'
+        node-version: '20'
         check-latest: true
     - name: Build
       run: |
@@ -30,8 +29,24 @@ jobs:
       run: |
         npm run --workspaces --if-present test:ci
         npm run --workspaces --if-present test:ts-versions
-    - name: Deno Test
-      run: deno test --allow-read deno
     - name: Code Verification
       run: |
         npm run --workspaces --if-present code-verification
+
+  jsr:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: denoland/setup-deno@v1
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        check-latest: true
+    - run: npm ci
+    - name: Build
+      run: npm run build:deno
+    - name: Test
+      run: cd deno && deno test --allow-read
+    - name: Publish
+      run: cd deno && deno publish --dry-run
