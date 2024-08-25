@@ -17,6 +17,7 @@ fileSystem.writeFileSync(
     {
       "name": "@ts-morph/ts-morph",
       "version": packageJson.version,
+      "license": "MIT",
       "exports": "./mod.ts",
       "imports": {
         "@ts-morph/common": `jsr:@ts-morph/common@^${commonPackageJson.version}`,
@@ -31,7 +32,7 @@ fileSystem.writeFileSync(
   `${destPath}/../deno.json`,
   JSON.stringify(
     {
-      "workspaces": [
+      "workspace": [
         "./bootstrap",
         "./common",
         "./ts-morph",
