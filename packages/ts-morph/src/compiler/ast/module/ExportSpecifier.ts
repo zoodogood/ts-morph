@@ -1,11 +1,14 @@
 import { errors, nameof, StringUtils, SyntaxKind, ts } from "@ts-morph/common";
 import { insertIntoParentTextRange, removeChildren, removeCommaSeparatedChild } from "../../../manipulation";
 import { ExportSpecifierSpecificStructure, ExportSpecifierStructure, StructureKind } from "../../../structures";
+import { isValidVariableName } from "../../../utils";
 import { Symbol } from "../../symbols";
 import { LocalTargetDeclarations } from "../aliases";
 import { callBaseGetStructure } from "../callBaseGetStructure";
 import { callBaseSet } from "../callBaseSet";
 import { Node } from "../common";
+import { StringLiteral } from "../literal";
+import { Identifier } from "../name";
 
 // todo: There's a lot of common code that could be shared with ImportSpecifier. It could be moved to a mixin.
 
@@ -16,11 +19,13 @@ export class ExportSpecifier extends ExportSpecifierBase<ts.ExportSpecifier> {
    */
   setName(name: string) {
     const nameNode = this.getNameNode();
-    if (nameNode.getText() === name)
+    if (this.getName() === name)
       return this;
 
-    nameNode.replaceWithText(name);
-
+    if (isValidVariableName(name))
+      nameNode.replaceWithText(name);
+    else
+      nameNode.replaceWithText(`"${name.replaceAll("\"", "\\\"")}"`);
     return this;
   }
 
@@ -28,7 +33,11 @@ export class ExportSpecifier extends ExportSpecifierBase<ts.ExportSpecifier> {
    * Gets the name of the export specifier.
    */
   getName() {
-    return this.getNameNode().getText();
+    const nameNode = this.getNameNode();
+    if (nameNode.getKind() === ts.SyntaxKind.StringLiteral)
+      return (nameNode as StringLiteral).getLiteralText();
+    else
+      return nameNode.getText();
   }
 
   /**
@@ -48,13 +57,14 @@ export class ExportSpecifier extends ExportSpecifierBase<ts.ExportSpecifier> {
       return this;
     }
 
-    let aliasIdentifier = this.getAliasNode();
-    if (aliasIdentifier == null) {
+    let aliasNode = this.getAliasNode();
+    if (aliasNode == null) {
       // trick is to insert an alias with the same name, then rename the alias. TS compiler will take care of the rest.
       this.setAlias(this.getName());
-      aliasIdentifier = this.getAliasNode()!;
+      aliasNode = this.getAliasNode()!;
     }
-    aliasIdentifier.rename(alias);
+    if (aliasNode.getKind() === SyntaxKind.Identifier)
+      (aliasNode as Identifier).rename(alias);
     return this;
   }
 
@@ -68,16 +78,17 @@ export class ExportSpecifier extends ExportSpecifierBase<ts.ExportSpecifier> {
       return this;
     }
 
-    const aliasIdentifier = this.getAliasNode();
-    if (aliasIdentifier == null) {
+    const aliasNode = this.getAliasNode();
+    if (aliasNode == null) {
       insertIntoParentTextRange({
         insertPos: this.getNameNode().getEnd(),
         parent: this,
         newText: ` as ${alias}`,
       });
-    } else {
-      aliasIdentifier.replaceWithText(alias);
-    }
+    } else if (isValidVariableName(alias))
+      aliasNode.replaceWithText(alias);
+    else
+      aliasNode.replaceWithText(`"${alias.replaceAll("\"", "\\\"")}"`);
 
     return this;
   }
@@ -87,12 +98,12 @@ export class ExportSpecifier extends ExportSpecifierBase<ts.ExportSpecifier> {
    * @remarks Use removeAliasWithRename() if you want it to rename any usages to the name of the export specifier.
    */
   removeAlias() {
-    const aliasIdentifier = this.getAliasNode();
-    if (aliasIdentifier == null)
+    const aliasNode = this.getAliasNode();
+    if (aliasNode == null)
       return this;
 
     removeChildren({
-      children: [this.getFirstChildByKindOrThrow(SyntaxKind.AsKeyword), aliasIdentifier],
+      children: [this.getFirstChildByKindOrThrow(SyntaxKind.AsKeyword), aliasNode],
       removePrecedingSpaces: true,
       removePrecedingNewLines: true,
     });
@@ -104,11 +115,12 @@ export class ExportSpecifier extends ExportSpecifierBase<ts.ExportSpecifier> {
    * Removes the alias and renames any usages to the name of the export specifier.
    */
   removeAliasWithRename() {
-    const aliasIdentifier = this.getAliasNode();
-    if (aliasIdentifier == null)
+    const aliasNode = this.getAliasNode();
+    if (aliasNode == null)
       return this;
 
-    aliasIdentifier.rename(this.getName());
+    if (aliasNode.getKind() === SyntaxKind.Identifier)
+      (aliasNode as Identifier).rename(this.getName());
     this.removeAlias();
 
     return this;
