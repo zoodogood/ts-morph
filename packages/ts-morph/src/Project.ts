@@ -21,6 +21,7 @@ import { Diagnostic, EmitOptions, EmitResult, LanguageService, Node, Program, So
 import { Directory, DirectoryAddOptions } from "./fileSystem";
 import { ManipulationSettings, ManipulationSettingsContainer } from "./options";
 import { ProjectContext } from "./ProjectContext";
+import { querySelectorAllInProject } from "./querySelectorAll";
 import { OptionalKind, SourceFileStructure } from "./structures";
 import { WriterFunction } from "./types";
 
@@ -697,6 +698,10 @@ export class Project {
    */
   getModuleResolutionHost(): ts.ModuleResolutionHost {
     return this._context.getModuleResolutionHost();
+  }
+
+  querySelectorAll(selector: string) {
+    return querySelectorAllInProject(this, selector);
   }
 }
 

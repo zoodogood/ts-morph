@@ -14,6 +14,7 @@ import {
 } from "../../../manipulation";
 import { Project } from "../../../Project";
 import { ProjectContext } from "../../../ProjectContext";
+import { querySelectorAllInNode } from "../../../querySelectorAll/index";
 import { Structure, Structures } from "../../../structures";
 import { WriterFunction } from "../../../types";
 import { CharCodes, getParentSyntaxList, getTextFromStringOrWriter, isStringKind, printNode, PrintNodeOptions } from "../../../utils";
@@ -30,7 +31,6 @@ import { ExtendedParser } from "../utils";
 import { SyntaxList } from "./SyntaxList";
 import { TextRange } from "./TextRange";
 import { ForEachDescendantTraversalControl, TransformTraversalControl } from "./TraversalControl";
-
 export type NodePropertyToWrappedType<NodeType extends ts.Node, KeyName extends keyof NodeType, NonNullableNodeType = NonNullable<NodeType[KeyName]>> =
   NodeType[KeyName] extends ts.NodeArray<infer ArrayNodeTypeForNullable> | undefined ? CompilerNodeToWrappedType<ArrayNodeTypeForNullable>[] | undefined
     : NodeType[KeyName] extends ts.NodeArray<infer ArrayNodeType> ? CompilerNodeToWrappedType<ArrayNodeType>[]
@@ -1918,6 +1918,10 @@ export class Node<NodeType extends ts.Node = ts.Node> {
     for (const descendant of this._getCompilerDescendantsOfKindIterator(kind))
       return this._getNodeFromCompilerNode(descendant) as KindToNodeMappings[TKind];
     return undefined;
+  }
+
+  querySelectorAll(selector: string) {
+    return querySelectorAllInNode(this, selector)
   }
 
   /**
